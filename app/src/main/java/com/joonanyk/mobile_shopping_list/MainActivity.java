@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ShoppingItemAdapter.OnItemClickListener {
@@ -33,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements ShoppingItemAdapt
 
         Button addItemButton = findViewById(R.id.add_item_button);
         addItemButton.setOnClickListener(v -> showAddItemDialog());
+
+        Button sortAlphabeticallyButton = findViewById(R.id.sort_alphabetically_button);
+        sortAlphabeticallyButton.setOnClickListener(v -> sortAlphabetically());
+
+        Button sortByDateButton = findViewById(R.id.sort_by_date_button);
+        sortByDateButton.setOnClickListener(v -> sortByDate());
     }
 
     private void showAddItemDialog() {
@@ -93,5 +101,17 @@ public class MainActivity extends AppCompatActivity implements ShoppingItemAdapt
         ShoppingItem editedItem = shoppingItems.get(position);
         editedItem.setName(itemName);
         shoppingItemAdapter.notifyItemChanged(position);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void sortAlphabetically() {
+        Collections.sort(shoppingItems, (item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
+        shoppingItemAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void sortByDate() {
+        Collections.sort(shoppingItems, (item1, item2) -> Long.compare(item1.getTimestamp(), item2.getTimestamp()));
+        shoppingItemAdapter.notifyDataSetChanged();
     }
 }
